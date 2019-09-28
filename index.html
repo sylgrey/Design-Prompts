@@ -6,7 +6,548 @@
 <meta charset="ISO-8859-1">
 <title>Design Randomizer</title>
 </head>
+  <style>
+
+
+/* --------------------------------- */
+/* CSS for checkboxes                */
+/* --------------------------------- */
+/* Customize the label (the container) */
+.checkContain {
+  display: inline-block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.checkContain input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.checkContain input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.checkContain .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* --------------------------------- */
+/* CSS for index.html                */
+/* --------------------------------- */
+body {
+	padding: 100px;
+	background-color: #004080;
+}
+
+.floatLeft {
+	float: left;
+}
+
+.general {
+	font-family: monospace;
+	font-size: 15px;
+	color: white;
+	border-radius: 10px;
+	border: dashed white 2px;
+	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.general.intro {
+	height: 200px;
+	width: 150px;
+	padding: 20px;
+	float: left;
+}
+
+form {
+	height: 400px;
+	width: 600px;
+	padding: 20px;
+	margin-left: 50px;
+	display: block;
+}
+
+p {
+	display: inline-block;
+	padding: 0;
+	margin: 10px;
+	font-size: 19px;
+}
+
+input {
+	display: inline-block;
+	margin-left: 5px;
+	border: none;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white; font-family : monospace;
+	text-align: center;
+	font-size: 19px;
+	font-family: monospace;
+}
+
+.center {
+	margin: auto;
+	text-align: center;
+}
+
+button {
+	background-color: rgba(0, 0, 0, 0.5);
+	border: none;
+	color: white;
+	padding: 5px 32px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 10px;
+	display: inline-block;
+	font-size: 20px;
+	font-family: monospace;
+}
+
+.title {
+	margin-top: -34px;
+	margin-left: 3px;
+	border-radius: 10px;
+	font-family: monospace;
+	font-size: 20px;
+	color: white;
+	background-color: #004080;
+	text-align: center;
+}
+
+.formTitle {
+	width: 375px;
+}
+
+.introTitle {
+	width: 65px;
+}
+
+.resultsTitle {
+	width: 85px;
+}
+
+.general.results {
+	display: block;
+	height: 100px;
+	width: 600px;
+	padding: 20px;
+	margin-left: 50px;
+	margin-top: 50px;
+}</style>
+<script>
+	var genderArray = [ "male", "female", "non-binary", "genderfluid",
+			"agender", "feminine", "masculine" ]
+
+	var creatureArray = [ "humanoid", "mecha", "monster", "anthro", "feral" ]
+
+	var themeArray = [ "puppet", "clock", "wereboar", "disco", "sharp teeth",
+			"hybrid", "love", "bucket", "sunflower", "flavor",
+			"stuffed animal", "learning", "adjustment", "long neck", "example",
+			"dinosaurs", "humor", "duke", "lens", "midnight", "stripes",
+			"duo dolls", "join", "station", "water", "a funny hat", "sheep",
+			"gazelle", "ornament", "history", "sister", "holy", "statement",
+			"frozen", "mischievous", "experience", "fusion", "hologram",
+			"medusa", "lotus pad", "hellish", "centipede", "sage", "static",
+			"star", "dungeons and dragons", "linen", "slice", "computer",
+			"roll", "spicy", "darkness", "t-rex", "moonlight", "silk", "skirt",
+			"order", "new moon", "trousers", "bigfoot", "flower spirit",
+			"corset", "punk", "space", "side", "pigmen", "clay", "chimp",
+			"cheerful", "seat", "light within", "jam", "shelf", "sports",
+			"careful", "carved wooden chopsticks", "advertisement", "cabochon",
+			"ants", "pipe", "fact", "bass", "rose gold", "snake people",
+			"cart", "shark", "huge mouth", "quill", "sleeping", "art",
+			"mushrooms", "extinct", "pringles", "sand", "holly", "cockatoo",
+			"old west", "(hair) clips", "tooth", "worms and dirt treat",
+			"forest", "ingredient", "heart", "lantern", "claws", "lift", "cow",
+			"dinner", "solar system", "doubt", "steel", "feather", "disgust",
+			"key", "pegasus", "scarf", "soft dumpling", "fanny packs", "glove",
+			"meerkat", "fortune", "fiery", "the world", "punks", "stream",
+			"mountains", "half-half", "ombre", "scene kid", "spade", "current",
+			"hand cuffs", "net", "a weapon", "pinata", "expansion", "sigil",
+			"leech", "support", "damage", "bodysuit", "book worm", "masks",
+			"mutation", "poison dart frog", "mine", "cat", "bath", "sapling",
+			"chimera", "warming touch", "wisp", "mushroom", "beret", "control",
+			"chick", "stone", "paper", "polar bear", "wood", "bandaid",
+			"moose", "lock", "hipster", "whale", "cushion", "basket",
+			"disease", "plum", "honey", "creepy crawlies", "chamomile", "baby",
+			"glitter", "triangles", "honeycomb", "impulse", "office supplies",
+			"evil mime", "extreme", "train", "spots", "poodle", "nose", "newt",
+			"lifeguard", "sassy and pink", "oversized sweaters", "bone",
+			"paint", "approval", "coral", "the sky", "cardinal", "monitor",
+			"sprout", "drawer", "pepsi", "traditional clothing", "chiffon",
+			"books", "orange peels", "owl", "fear", "gryphon", "stomach",
+			"hot dog", "cheese", "coal", "brass", "circle", "two tails", "orb",
+			"ribbon", "death", "stormy day", "roller blader", "wings",
+			"3d glasses", "branch", "halo", "skull head", "freckles", "smash",
+			"metal teeth", "fresh linen", "blow", "glory", "stockings", "bulb",
+			"glittery", "victorian fashion", "opossum", "vegetable", "spice",
+			"lip balm", "metal", "guppy", "sickness", "steaming",
+			"fish scales", "dork", "library", "push", "request", "pocket",
+			"long", "duckling", "powder", "corral", "expert", "button",
+			"animal", "sloth", "jungle", "pipes", "sugar", "music",
+			"aggressive", "pirate", "glowstick", "hospital", "lily pad",
+			"zippers", "start", "edible rose petals", "society",
+			"stained glass", "sporty salesman", "tin", "fluffy", "jazz",
+			"transparent backpack", "brake", "curse", "heron", "pull",
+			"calling card", "diamond", "japanese devil", "cocoa bean",
+			"visible heart", "horns", "girl", "tuille", "digestion", "ticket",
+			"sparkly heart", "trees", "triceratops", "position", "con man",
+			"drooling", "balloon", "fowl", "journey", "fork", "apron",
+			"cyberspace", "polycephaly", "cigarette", "gun", "light",
+			"old damaged stone statues", "chest", "slope", "fairy",
+			"pineapple", "exoskeleton", "tray", "the ocean", "chocolate",
+			"dead eyed", "gorilla", "goth", "gamer nerd", "daughter", "number",
+			"match", "flying", "eyes", "man", "breakfast", "act",
+			"overly cute", "webbed feet", "bouquet of feathers", "microphone",
+			"night", "weapon", "son", "agreement", "dirt", "vitiligo", "steam",
+			"mousse", "homely", "price", "primary colors", "nylon", "balance",
+			"apparatus", "armor", "tarot", "rat", "gunshot", "sweat",
+			"butterflies", "soap", "design", "classical music", "stork", "wax",
+			"horse", "pyramids", "odd number of wings", "junkyard",
+			"evil twins", "garland", "prince of darkness", "baseball bat",
+			"spider", "curve", "futakuchi onna", "mohawk", "pajamas",
+			"fiction", "bird", "woman", "evil queen", "pinwheel",
+			"big sweaters", "vines", "grass", "sunset", "fatigue", "bit",
+			"boba tea", "sabertooth", "bread", "jellyfish", "month",
+			"hot in summer", "internet", "wash", "decay", "expanding",
+			"magnetic", "slugs", "capes", "prism", "constellation",
+			"circus freak", "beach", "thought", "pride flags", "manager",
+			"sun", "undead", "plough", "rate", "lake", "science", "toy",
+			"alchemy", "birch tree", "lock and keys", "care", "quality",
+			"siren", "delicate", "government", "glamour", "log", "small",
+			"fluorescent lighting", "frankenstein", "swim", "circles",
+			"flaking", "angel", "teaching", "funk", "nurture", "prose",
+			"degree", "servant", "chains", "tuna", "h.p. lovecraft monster",
+			"spine", "intergalactic princess", "reptile", "musician", "sundae",
+			"band", "cybergoth", "axolotl", "floaty", "noon", "hammer",
+			"leucistic", "need", "evil king", "chess", "name", "toothy",
+			"education", "unique light bulb", "oil", "walk", "stag",
+			"chill vibes", "greed", "salamander", "infection", "fungus",
+			"alligator", "cake", "place", "infected", "tiger", "shrimp",
+			"duchess", "reflective", "princess of darkness", "rabies",
+			"warm drinks", "doll", "fast food", "indigestion", "hair",
+			"kettle", "wave", "sense", "hollow insides", "mantis", "drink",
+			"6+ limbs", "warm in winter", "wand", "leather", "cheetah", "farm",
+			"line", "butcher", "happy clown", "kelpie", "gooey", "nail polish",
+			"jumping mouse", "cloud", "ship", "doctor", "spoon", "dress",
+			"relation", "witch", "sailors", "psyche", "committee", "milk",
+			"manticore", "spring", "air", "syrup blood", "grave", "berry",
+			"torn apart", "bacon", "made of bees and honey", "rainbows",
+			"sea glass", "deck of cards", "soft boy", "corpse", "smoke",
+			"knife", "leather jacket", "skeleton", "loyal", "yugio master",
+			"frill", "tree", "receptionist", "cold", "purpose", "alert",
+			"beachwear", "patches", "car keys", "division", "form", "serenity",
+			"winter", "pepto bismol", "parchment", "fingerprint", "reason",
+			"knot", "tears", "step", "shirt", "mystic river", "blue", "crush",
+			"beanie baby", "lion", "sorrow", "sad clown", "pet", "rap music",
+			"earth", "bed", "insulation", "smell", "black bear", "blessing",
+			"stained glass windows", "broken", "chrysanthemum", "gauntlet",
+			"auspicious", "the postal service (band)", "pump", "sepia",
+			"blooms", "decision", "blind", "beach vacation", "cranberry",
+			"boat", "kind sharks", "tentacle", "pit bull", "snarl",
+			"secretive", "whip", "robe", "apple", "kitsch", "siblings",
+			"street", "doe", "desert", "phantasm", "ruined",
+			"cutesy hairstyle", "sick", "lotus", "rabbits", "glow", "lobster",
+			"onion", "frightening", "queen", "move", "glowsticks", "carrot",
+			"box", "front", "fingernails", "funky", "polish", "fold", "kaiju",
+			"toe", "error", "sea turtle", "prisoner", "color", "dandelion",
+			"sort", "looking glass", "purgatory", "porcelain doll", "wilted",
+			"fall", "pig", "scream", "minx", "hand", "birth", "nut",
+			"songbird", "divinity", "fireworks", "spirit", "gold", "frame",
+			"pink candy", "haunt", "telescope", "school", "goop", "coins",
+			"rider", "pachycephalosaurus", "eggs", "bubblewrap", "pixie",
+			"tax", "cup", "possession", "turtle", "writing", "acid blood",
+			"wooden", "worm", "frightened", "pride", "arch", "offer", "square",
+			"glitch", "glow worms", "innards", "attack", "laugh", "squares",
+			"look", "parcel", "ruffles", "canvas", "force", "wall", "limit",
+			"distance", "night terror", "mustard and ketchup", "rub", "blush",
+			"weight", "belief", "marble statue", "broth", "flesh", "sour",
+			"family robot", "cocacola", "power", "desire", "gold chains",
+			"city in night", "transparent", "lighthouse", "knives", "polyp",
+			"lemur", "sentaur", "ear", "unemployment", "unemotional",
+			"poker cards", "civet", "root beer", "meadow", "guide", "hex",
+			"edge", "stitched together", "pleasure", "foam", "bird nest",
+			"stop", "dilapidated", "hospital gowns", "pastry", "run",
+			"scrolls", "sad girl", "year", "stereotypical dog but not dog",
+			"bell", "waves", "mochi", "teddy bear monster", "owl + (animal)",
+			"wool/thread", "nightmare", "rod", "millipede", "shard", "prison",
+			"vinyl records", "bees", "bat", "group", "fish", "flapper", "food",
+			"hiding place", "tongue", "spiney", "saddle", "surprise", "touch",
+			"stickers", "no eyes", "signs", "dark", "cry", "belts", "thumb",
+			"crystals", "stretch", "stars", "back", "deer", "bubbles",
+			"iced tea", "gummy", "flame", "feathers", "danger", "father",
+			"earth element", "beehive", "rest", "harmony", "measure",
+			"wolfish", "kiss", "spiderweb", "test", "chicken noodle soup",
+			"dim lights", "headless statue", "grey", "moss", "filth",
+			"blossoms", "list", "silver", "shells", "thread", "slip",
+			"deep ocean", "rule", "driving", "produce", "headbands",
+			"soft sounds", "heartache", "legs", "print", "pot shop", "process",
+			"envy", "figurine", "shock", "snow", "book", "orange", "page",
+			"wedding veil", "blanket", "shawl", "virus", "lead",
+			"delivery person", "blank page", "copy", "porcelain",
+			"multiple heads", "lord", "severed limbs", "ankylosaur",
+			"electronic", "oyester", "hearing", "friend", "brain", "office",
+			"werewolves", "egg yolk", "bull", "money", "receipt", "comb",
+			"bracelets", "heatwave", "game controller", "brother",
+			"rose garden", "language", "virtual reality", "freckled lemonade",
+			"diamonds", "magic", "wood burning art", "ghost", "boot",
+			"the postal service", "fallen angel", "ant", "truck", "rough",
+			"plants", "soup", "middle", "cough", "sweet tooth", "hungry",
+			"horn", "shake", "melanistic", "kidcore", "glowing fluid",
+			"person", "direction", "use", "whistle", "meat",
+			"animal headbands", "fish person", "pope", "hen", "typhoon", "dew",
+			"map", "grime", "water element", "pink", "coconut", "druid",
+			"peace", "clergyman", "skin", "suggestion", "monkey", "pattern",
+			"mermaid", "attempt", "game", "party", "fissure", "creed",
+			"multiple limbs", "mysticism", "reward", "puzzles", "doughnuts",
+			"novels", "sleek", "substance", "face paint", "hope", "piercings",
+			"bamboo", "paper lantern", "healing", "silence", "cook",
+			"sunshine", "bioluminescent", "plastic", "demon", "ocean",
+			"muscle", "dungeon", "rose", "spell", "opal", "chef", "cloth",
+			"black dog", "headphones", "the safari", "stitch", "shell",
+			"company", "unit", "comparison", "praying mantis", "butter",
+			"question", "arm", "room", "pajamas and slippers", "cummerbund",
+			"mosquito", "veil", "sunscreen", "contagious", "salsa", "exchange",
+			"head", "point", "mime", "lip", "robot", "vessel", "gutters",
+			"guard", "invention", "mask", "swamp", "disguise", "seaweed",
+			"noise", "instrument", "stress", "turn", "police", "snails",
+			"pretty in pink", "hollow", "dragon", "marbled cat", "trick",
+			"sea", "dripping", "rice", "range", "tundra", "carriage", "hippie",
+			"blade", "needle", "neon lights", "skirts", "rhino", "curled",
+			"frog", "cave", "golden heart", "china", "albino", "rail",
+			"motion", "mountain", "gothic lolita", "sock", "store", "eruption",
+			"verse", "obelisk", "letter", "heart cutouts", "thunder", "cosmos",
+			"lily", "zipper", "watch", "amount", "day", "brush", "event",
+			"hedgehog", "hour", "alcohol", "solo cup", "skull", "blushing",
+			"blend", "noodle", "cockatiel", "nosebleed", "mind", "dragonling",
+			"mouths", "family", "laces", "belt", "judge", "werewolf", "tulips",
+			"screw", "carpet", "luck charms", "quiet road", "tail", "mud",
+			"slithering tongue", "seapunk", "harvest", "teeth", "fluff",
+			"crack", "onesie", "mimic", "base", "tainted", "growth",
+			"big red crabs", "sign", "taste", "white beach", "stars imbedded",
+			"coat", "contrast", "tulle", "phoenix", "werebear", "waste",
+			"small dogs", "steam punk", "chameleon", "goggles", "detail",
+			"time", "dryad", "note", "porter", "spiky", "potato",
+			"distribution", "folder", "sex", "respect", "daredevils", "bite",
+			"maggots", "amusement parks", "big dogs", "door", "raypunk",
+			"property", "copper", "country", "mother", "octopus", "dissolved",
+			"board", "swarm", "ectoplasm", "destruction", "tv star", "ceramic",
+			"amusement", "wheelchairs", "poison", "gems", "eye", "self", "sky",
+			"koala", "abomination", "asteroids", "swamp monster", "radio",
+			"discarded and forgotten", "poker", "debt", "graverobber",
+			"fire element", "fight", "weather", "rose whip", "summer",
+			"thorns", "camera", "hermit", "hell spawn", "morning",
+			"classic skype", "land", "fur", "warm", "roasted", "stamp",
+			"stub legs", "straw", "organization", "tsuchinoko", "frail",
+			"fears", "paws", "sail", "branches", "leash", "raccoon", "system",
+			"wilted flowers", "paste", "herbs", "secretary", "nerve", "word",
+			"painted", "flower", "crown", "reaction", "transport", "hole",
+			"burn", "bridle", "song", "wound", "angelic", "hair gel", "twist",
+			"pastel goths", "sponge", "the desert", "town", "tree creature",
+			"barista", "operation", "hurt", "peach", "dog", "sharp",
+			"sorcerer", "discussion", "polaroid", "neon", "cloak", "floor",
+			"popped balloons", "paper doll", "credit", "nimbus",
+			"brass knuckles", "meeting", "salt", "grape", "florals", "blood",
+			"curtain", "memory", "blue eyes white dragon",
+			"fruit bowl monster", "kingdom/royalty", "potion", "slime",
+			"worms", "glass", "glass shop", "spiders", "beans", "brick",
+			"man-made", "infestation", "soft", "picture", "atompunk",
+			"witchery", "beard", "mountain climber", "wires", "mass", "nail",
+			"fluff ball", "toddlers", "leg", "sword", "rain", "parasite",
+			"theory", "body", "aloe vera", "arrows", "ruby", "stem", "oven",
+			"kick", "table", "fangs", "duck", "vampire", "light bulbs",
+			"umbrella", "carnival", "effect", "change", "loss", "roses",
+			"syringe", "rooster", "sandwich", "pleated skirts",
+			"shredded paper", "grip", "hate", "selection", "troll",
+			"elemental", "clouded peak", "payment", "idea", "dieselpunk",
+			"field", "smile", "pain", "chorus", "market", "cotton", "island",
+			"mouth", "chocolate milk", "curdled red", "alien", "minute",
+			"vhs tapes", "eyeburn", "clown", "goat", "breath", "observation",
+			"fur coats", "bow and arrow", "treasure", "wool", "development",
+			"freak show", "emerald", "industry", "custom guitar", "robin egg",
+			"teddy bear", "insecure", "mist", "jelly", "tendency", "cats",
+			"burst", "barefoot", "scales", "cactus", "hard cold exterior",
+			"kidcore outfit", "jr slattum", "third eye", "swimsuit", "pants",
+			"jar", "representative", "ears", "pawn shop", "snowdrop", "cmyk",
+			"meek", "twilight", "gluttony", "help", "building", "connection",
+			"corals", "end", "tropical", "bee", "religion", "plate", "dish",
+			"smoking", "rats", "behavior", "shadow puppets",
+			"traditional japanese", "interest", "thing", "orangutans",
+			"reading", "lace", "bottle", "pistol", "shadow", "ink",
+			"heart-shaped purse", "knight", "dust", "machine", "sleepy bugs",
+			"crying", "zebra print", "tea", "scale", "clipping", "garden",
+			"cowboy", "skinny", "cover", "playing card", "sweet", "basin",
+			"origami", "machinery", "big brother", "collar", "underground",
+			"mouse", "sweets", "authority", "low", "music box", "raging sea",
+			"big hands", "salmon", "nocturnal", "bird people", "pokemon",
+			"sketchbook", "prongs", "businessman", "flea", "multiplication",
+			"lava", "lingerie", "festival", "itchy", "rage", "mountain top",
+			"dusk", "oasis", "bloom", "leaves", "harbor", "foot", "cups",
+			"news", "lust", "way", "coffee", "undo", "sly", "confident",
+			"winner/champion", "scholar", "angle", "marching band", "strong",
+			"pin", "dodo bird", "berries", "moon", "polydactyly", "model",
+			"pillow", "helix", "boy", "cord", "possessed weapon", "face",
+			"needles", "frogs", "spy", "demonic possession", "talon", "card",
+			"first aid kit", "sadness", "bear", "dull", "drain", "plane",
+			"meatball", "knowledge", "house", "cut", "merchant", "argument",
+			"lemonade", "gaudy clothes", "mermaids", "hippogriff", "cyborg",
+			"holo", "conjoined twins", "cookie", "root", "burlap", "arachnid",
+			"chalk", "maple", "discovery", "glowing", "tailless whip scorpion",
+			"sparkle", "freeze", "bitter", "corgi", "polka dot", "black pearl",
+			"week", "view", "sprite", "dinosaur", "dessert", "chain",
+			"red eyes", "bridge", "seed", "blight", "traditional goth",
+			"sound", "canopy", "account", "protest", "road", "church",
+			"sunglasses", "fashion designer", "observant", "kings", "bismuth",
+			"sleep", "candy", "oleander", "sad dinosaur", "bonfire", "hat",
+			"pomegranate", "lightning", "sun bear", "pizza", "red", "android",
+			"baby blankets", "thief", "barbed wire", "pterodactyl",
+			"object head", "paints", "inflatable pool toys", "saturn",
+			"terrarium", "ice", "poisonous", "balloons", "pilot", "attention",
+			"salve", "jump", "bubblegum", "engine", "crocodile", "big eyes",
+			"geek", "voice", "hook", "river", "filled", "evil clown", "chips",
+			"harpy", "chance", "nerd", "candelabra", "poisoned", "queen bee",
+			"1950s diner", "bubble", "tunic", "cuddles", "vaporwave",
+			"flounder", "lonesome", "hot", "green", "psycho", "wine",
+			"visual pun", "superhero", "horror", "blue resin in wood", "ring",
+			"shoe", "poetry", "vapor", "vampires", "rope", "snake",
+			"mystic topaz", "broken planet", "trouble", "australia", "cause",
+			"condition", "level", "evening", "meal", "opinion",
+			"siamese twins", "opal studs", "citrus fruits", "egg", "feeling",
+			"whisker", "record", "sleeveless", "paper pal", "vegetables",
+			"naps", "skinned", "punishment", "goldfish", "wind",
+			"oversized headphones", "flight", "water bottle", "cryptid",
+			"cheetah print", "night sky", "aquatic", "algae", "giraffe",
+			"scythe", "flag", "supersonic", "work", "kangaroo", "bag", "beak",
+			"candle", "watercolor bleed", "high won't stop", "starry sky",
+			"dice", "golden hour", "wire", "jewel", "crystal",
+			"flies and bugs", "roar", "evil scientist", "embrace", "gremlin",
+			"business", "beetle", "apples", "window", "parasol", "gears",
+			"dragonfly", "liquid", "the discord platform", "rabbit",
+			"pigtails", "nation", "wing", "plesiosaur", "roof", "heat",
+			"sneakers", "mannequin", "finger", "insurance", "size", "anemone",
+			"story", "ogre", "gold glint", "answer", "crime", "lunch", "mark",
+			"part", "quilt", "unicorn", "decrepit", "fruit", "clear skin",
+			"wasp", "ball", "werebat", "large", "cyberpunk", "pen", "lavender",
+			"bones", "iron", "plant", "caterpillar", "deadly", "trade", "ray",
+			"prince", "visionary", "fur coat", "king", "cork", "babboon",
+			"just overalls", "cell", "scissors", "tea cakes", "ice cream",
+			"high heels", "existence", "value", "profit", "relic", "regret",
+			"hp lovecraft", "pride colors", "throat", "gift", "war", "play",
+			"sweet girls", "firefly", "stocking", "stick", "sunburst", "latin",
+			"comfort", "lasso", "shade", "wilderness", "lady", "shame", "lamp",
+			"princess", "wraith", "knee", "serpent", "recipe", "burritos",
+			"savannah", "nurse", "neck", "imaginary", "cola", "leaf",
+			"hypnosis", "sneeze", "big cat", "candy death", "rhythm",
+			"rosey scent", "dying life", "reflection", "torch", "monochrome",
+			"whimsical", "brown bear", "artist", "structure", "attraction",
+			"creature from the ocean's depths", "talk", "wheel", "plague",
+			"lock and key", "heal", "increase", "top", "criss cross",
+			"neon colors", "steampunk", "motorcycle gear", "fly", "priest",
+			"insect", "rainbow", "boring", "grain", "meow", "stage",
+			"tourists", "fire", "denim", "carnivorous plant", "masquerade",
+			"haori", "competition", "towel", "pot", "bugs", "cracked",
+			"baseball", "chin", "drop", "television", "cotton candy",
+			"coelacanth", "pencil", "army", "fox", "eye candy", "owner" ]
+
+	function submitForm() {
+		var includeGender = document.getElementById("includeGender");
+		var creatureType = document.getElementById("creatureType");
+		var themeCount = document.getElementById("themeCount").value;
+		var resultsDiv = document.getElementById("results");
+		
+		resultsDiv.innerHTML = "<div class=\"title resultsTitle\">results</div>"
+		
+		if (includeGender.checked) {
+			var gender = genderArray[Math.floor(Math.random() * genderArray.length)];
+			resultsDiv.innerHTML += "<br>gender: " + gender;
+		}
+		
+		if (creatureType.checked) {
+			var creature = creatureArray[Math.floor(Math.random() * creatureArray.length)];
+			resultsDiv.innerHTML += "<br>creature type: " + creature;
+		}
+		
+		resultsDiv.innerHTML += "<br>themes: ";
+		var themes = "";
+		for (index = 0; index < themeCount; index++) {
+			var item = themeArray[Math.floor(Math.random() * themeArray.length)];
+			themes += "\"" + item + "\", ";
+		}
+		resultsDiv.innerHTML += themes.substring(0, themes.length - 2);
+	}
+</script>
 <body>
-<h1>hello</h1>
+	<div class="floatLeft">
+		<div class="intro general">
+			<div class="title introTitle">howdy</div>
+			<br>looking for some inspirationnnn?<br> <br>fill out
+			the form to generate a random prompt for your next character design <br>
+			<br>:)
+		</div>
+	</div>
+	<div class="floatLeft">
+		<form class="general">
+			<div class="title formTitle">sylgrey's design prompt generator</div>
+			<br>
+			<p>-> include gender?</p>
+			<label class="checkContain"><input type="checkbox"
+				id="includeGender"><span class="checkmark"></span></label><br>
+			<p>-> include creature type?</p>
+			<label class="checkContain"><input type="checkbox"
+				id="creatureType"><span class="checkmark"></span></label><br>
+			<p>-> number of themes?</p>
+			<input type="text" placeholder="0-3" size="5" id="themeCount">
+			<br>
+			<p>-> number of colors? [tba!]</p>
+			<input type="text" placeholder="0-5" size="5" id="colorCount">
+			<br> <br>
+			<div class="center">
+				<button onclick="submitForm(); return false;">generate that
+					shit</button>
+			</div>
+		</form>
+		<div class="results general" id="results">
+			<div class="title resultsTitle">results</div>
+		</div>
+	</div>
 </body>
 </html>
