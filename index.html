@@ -6,68 +6,68 @@
 <meta charset="ISO-8859-1">
 <title>Design Randomizer</title>
 </head>
-  <style>
-
+<style>
+/* written by sylgrey */
 
 /* --------------------------------- */
 /* CSS for checkboxes                */
 /* --------------------------------- */
 /* Customize the label (the container) */
 .checkContain {
-  display: inline-block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 20px;
-  cursor: pointer;
-  font-size: 22px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+	display: inline-block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 20px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 /* Hide the browser's default checkbox */
 .checkContain input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
 }
 
 /* Create a custom checkbox */
 .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: rgba(0, 0, 0, 0.5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 25px;
+	width: 25px;
+	background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* Create the checkmark/indicator (hidden when not checked) */
 .checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
+	content: "";
+	position: absolute;
+	display: none;
 }
 
 /* Show the checkmark when checked */
 .checkContain input:checked ~ .checkmark:after {
-  display: block;
+	display: block;
 }
 
 /* Style the checkmark/indicator */
 .checkContain .checkmark:after {
-  left: 9px;
-  top: 5px;
-  width: 5px;
-  height: 10px;
-  border: solid white;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
+	left: 9px;
+	top: 5px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
 }
 
 /* --------------------------------- */
@@ -118,7 +118,8 @@ input {
 	margin-left: 5px;
 	border: none;
 	background-color: rgba(0, 0, 0, 0.5);
-	color: white; font-family : monospace;
+	color: white;
+	font-family: monospace;
 	text-align: center;
 	font-size: 19px;
 	font-family: monospace;
@@ -172,7 +173,8 @@ button {
 	padding: 20px;
 	margin-left: 50px;
 	margin-top: 50px;
-}</style>
+}
+</style>
 <script>
 	var genderArray = [ "male", "female", "non-binary", "genderfluid",
 			"agender", "feminine", "masculine" ]
@@ -493,19 +495,21 @@ button {
 		var creatureType = document.getElementById("creatureType");
 		var themeCount = document.getElementById("themeCount").value;
 		var resultsDiv = document.getElementById("results");
-		
+
 		resultsDiv.innerHTML = "<div class=\"title resultsTitle\">results</div>"
-		
+
 		if (includeGender.checked) {
-			var gender = genderArray[Math.floor(Math.random() * genderArray.length)];
+			var gender = genderArray[Math.floor(Math.random()
+					* genderArray.length)];
 			resultsDiv.innerHTML += "<br>gender: " + gender;
 		}
-		
+
 		if (creatureType.checked) {
-			var creature = creatureArray[Math.floor(Math.random() * creatureArray.length)];
+			var creature = creatureArray[Math.floor(Math.random()
+					* creatureArray.length)];
 			resultsDiv.innerHTML += "<br>creature type: " + creature;
 		}
-		
+
 		resultsDiv.innerHTML += "<br>themes: ";
 		var themes = "";
 		for (index = 0; index < themeCount; index++) {
