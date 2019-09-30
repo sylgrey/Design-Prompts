@@ -1,4 +1,4 @@
-<!-- written by sylgrey -->
+<!-- poorly written by sylgrey -->
 
 <!DOCTYPE html>
 <html>
@@ -7,8 +7,6 @@
 <title>Design Randomizer</title>
 </head>
 <style>
-/* written by sylgrey */
-
 /* --------------------------------- */
 /* CSS for checkboxes                */
 /* --------------------------------- */
@@ -173,6 +171,19 @@ button {
 	padding: 20px;
 	margin-left: 50px;
 	margin-top: 50px;
+}
+
+.colorBlock {
+	border: solid black 1px;
+	padding: 3px 10px;
+	font-size: 15px;
+	text-align: center;
+	line-height: 25px;
+	height: 25px;
+	display: inline-block;
+	background-color: #000;
+	text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000,
+		1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 </style>
 <script>
@@ -494,29 +505,62 @@ button {
 		var includeGender = document.getElementById("includeGender");
 		var creatureType = document.getElementById("creatureType");
 		var themeCount = document.getElementById("themeCount").value;
+		var colorCount = document.getElementById("colorCount").value;
 		var resultsDiv = document.getElementById("results");
+
+		if (themeCount > 5 || themeCount < 0) {
+			window
+					.alert("the number you entered for theme count is less than stellar friendo");
+			return;
+		} else if (colorCount > 5 || colorCount < 0) {
+			window
+					.alert("the number you entered for color count is outta range silly pie!");
+			return;
+		}
 
 		resultsDiv.innerHTML = "<div class=\"title resultsTitle\">results</div>"
 
 		if (includeGender.checked) {
 			var gender = genderArray[Math.floor(Math.random()
 					* genderArray.length)];
-			resultsDiv.innerHTML += "<br>gender: " + gender;
+			resultsDiv.innerHTML += "<br><i>gender:</i> " + gender;
 		}
 
 		if (creatureType.checked) {
 			var creature = creatureArray[Math.floor(Math.random()
 					* creatureArray.length)];
-			resultsDiv.innerHTML += "<br>creature type: " + creature;
+			resultsDiv.innerHTML += "<br><i>creature type:</i> " + creature;
 		}
 
-		resultsDiv.innerHTML += "<br>themes: ";
-		var themes = "";
-		for (index = 0; index < themeCount; index++) {
-			var item = themeArray[Math.floor(Math.random() * themeArray.length)];
-			themes += "\"" + item + "\", ";
+		if (themeCount > 0) {
+			resultsDiv.innerHTML += "<br><i>themes:</i> ";
+			var themes = "";
+			for (index = 0; index < themeCount; index++) {
+				var item = themeArray[Math.floor(Math.random()
+						* themeArray.length)];
+				themes += "\"" + item + "\", ";
+			}
+			resultsDiv.innerHTML += themes.substring(0, themes.length - 2);
 		}
-		resultsDiv.innerHTML += themes.substring(0, themes.length - 2);
+
+		if (colorCount > 0) {
+			resultsDiv.innerHTML += "<br><i>colors:</i> "
+			for (index = 0; index < colorCount; index++) {
+				var color = getRandomColor();
+				resultsDiv.innerHTML += "<div id=\"colorpad" + index + "\" class=\"colorBlock\">"
+						+ color + "</div>";
+				$("#colorpad" + index).css("background-color", color);
+			}
+		}
+	}
+
+	function getRandomColor() {
+		var letters = '0123456789ABCDEF';
+		var color = '#';
+		for (var i = 0; i < 6; i++) {
+			color += letters[Math.floor(Math.random() * 16)];
+		}
+		return color;
 	}
 </script>
 <body>
@@ -539,9 +583,9 @@ button {
 			<label class="checkContain"><input type="checkbox"
 				id="creatureType"><span class="checkmark"></span></label><br>
 			<p>-> number of themes?</p>
-			<input type="text" placeholder="0-3" size="5" id="themeCount">
+			<input type="text" placeholder="0-5" size="5" id="themeCount">
 			<br>
-			<p>-> number of colors? [tba!]</p>
+			<p>-> number of colors?</p>
 			<input type="text" placeholder="0-5" size="5" id="colorCount">
 			<br> <br>
 			<div class="center">
@@ -549,6 +593,8 @@ button {
 					shit</button>
 			</div>
 		</form>
+		<script
+			src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<div class="results general" id="results">
 			<div class="title resultsTitle">results</div>
 		</div>
