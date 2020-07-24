@@ -6,6 +6,7 @@
 <meta charset="ISO-8859-1">
 <link href="styles.css" type="text/css" rel="stylesheet" />
 <title>Design Randomizer</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 </head>
 <style>
 
@@ -187,8 +188,23 @@ button {
 	text-shadow: 2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000,
 		1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
+
+.general.image {
+	display: block;
+	height: 150px;
+	width: 640px;
+	margin-left: 50px;
+	margin-top: 50px;
+	overflow: hidden;
+}
+
+.imageStrip {
+	background-size: contain;
+	height: 170px;
+}
+
 </style>
-<script>
+<script type="text/javascript">
 	var genderArray = [ "male", "female", "non-binary", "genderfluid",
 			"agender", "feminine", "masculine" ]
 
@@ -509,6 +525,7 @@ button {
 		var themeCount = document.getElementById("themeCount").value;
 		var colorCount = document.getElementById("colorCount").value;
 		var resultsDiv = document.getElementById("results");
+		var imageDiv = document.getElementById("imagestrip");
 
 		if (themeCount > 5 || themeCount < 0) {
 			window
@@ -554,6 +571,30 @@ button {
 				$("#colorpad" + index).css("background-color", color);
 			}
 		}
+
+		var imageKeyword = themeArray[Math.floor(Math.random() * themeArray.length)];
+
+	    $(document).ready(function(){
+
+	        $.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?",
+	        {
+	            tags: imageKeyword,
+	            tagmode: "any",
+	            format: "json"
+	        },
+	        function(data) {
+	            var rnd = Math.floor(Math.random() * data.items.length);
+
+	            var image_src = data.items[rnd]['media']['m'].replace("_m", "_b");
+
+	            imageDiv.innerHTML = "<div class=\"title resultsTitle\">image</div>"
+
+	            imageDiv.innerHTML += "<div id=\"img\" class=\"imageStrip\"></div>";
+				$("#img").css("background-image", "url('" + image_src + "')");
+
+	        });
+
+	    });
 	}
 
 	function getRandomColor() {
@@ -564,6 +605,7 @@ button {
 		}
 		return color;
 	}
+
 </script>
 <body>
 	<div class="floatLeft">
@@ -600,6 +642,9 @@ button {
 			src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 		<div class="results general" id="results">
 			<div class="title resultsTitle">results</div>
+		</div>
+		<div class="image general" id="imagestrip">
+			<div class="title resultsTitle">image</div>
 		</div>
 	</div>
 </body>
